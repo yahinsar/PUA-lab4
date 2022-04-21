@@ -195,17 +195,6 @@ bool unique_word(string A_i, vector <string> s_predst) {
     return true;
 }
 
-void third_sootn(int T, vector <string> A, int R, vector < pair < string, string > > relations) {
-    vector <string> s_predst;
-    //длина слова = 1
-    for (int i = 0; i < T; i++)
-    {
-        if (unique_word(A[i], s_predst)) {
-
-        }
-    }
-}
-
 bool unique_word_on_pair(string word, vector < pair < string, string > > relations, string& sec_pair) {
     for (int i = 0; i < relations.size(); i++)
     {
@@ -272,11 +261,8 @@ void find_res_word(string keli_word, vector <string> S, vector < pair < string, 
                 if (!unique_word_on_pair(f_part, relations, s_pair))
                 {
                     rec_word = "";
-                    if (s_pair == "abbb") {
-                        int kk = 1;
-                    }
                     vector<string> part_ = word_vector(s_pair);
-                    
+
                     for (int k = 0; k < j + 1; ++k)
                         rec_word = rec_word + word_now[k];
 
@@ -287,17 +273,12 @@ void find_res_word(string keli_word, vector <string> S, vector < pair < string, 
 
                     if (rec_word.size() < keli_word.size())
                     {
-                        //dop_proverka = rec_word;
-                        /*if () {
-
-                        }*/
-                        //else
                         res_keli_elems.push_back(rec_word);
                         if (dop_proverka(rec_word, S, relations, max_w, max_sist_pred)) {
                             //cout << rec_word << " ";
                             return;
                         }
-                        else 
+                        else
                             find_res_word(rec_word, S, relations, max_w, max_sist_pred);
                     }
                     else
@@ -316,10 +297,6 @@ void vivod_keli(vector <string> S, vector < pair < string, string > > relations,
     {
         for (int j = 0; j < S.size(); j++)
         {
-
-            if (i == 2 && j == 4) {
-                int k = 1;
-            }
 
             string keli_word = S[i] + S[j];
             find_res_word(keli_word, S, relations, max_w, max_sist_pred);
