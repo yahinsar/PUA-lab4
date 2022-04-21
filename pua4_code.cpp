@@ -226,6 +226,111 @@ vector<string> word_vector(string word)
     return(convert_word);
 }
 
+vector <string> res_keli_elems;
+
+
+void find_res_word(string keli_word, vector <string> S, vector < pair < string, string > > relations, int max_w, int max_sist_pred);
+
+bool dop_proverka(string keli_word, vector <string> S, vector < pair < string, string > > relations, int max_w, int max_sist_pred) {
+    int start_size = res_keli_elems.size();
+    find_res_word(keli_word, S, relations, max_w, max_sist_pred);
+
+    if (start_size != res_keli_elems.size()) {
+        if (res_keli_elems.size() == 1 || res_keli_elems[res_keli_elems.size() - 1] == res_keli_elems[res_keli_elems.size() - 2]) {
+            if (res_keli_elems.size() != 1) {
+                res_keli_elems.erase(res_keli_elems.begin() + res_keli_elems.size() - 1);
+            }
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
+
+void find_res_word(string keli_word, vector <string> S, vector < pair < string, string > > relations, int max_w, int max_sist_pred) {
+    if (!unique_word(keli_word, S)) {
+        //cout << keli_word << " ";
+        res_keli_elems.push_back(keli_word);
+        return;
+    }
+    else {
+        string rec_word;
+        vector<string> word_now = word_vector(keli_word);
+
+        int sch = 2;
+        while (sch <= max_w)
+        {
+            for (int i = word_now.size() - 1; i >= 0; --i)
+            {
+                if (sch > keli_word.size() || sch > i + 1)
+                    break;
+                int j;
+                string f_part = "";
+                for (j = i; j > i - sch; --j)
+                    f_part = word_now[j] + f_part;
+                string s_pair = "";
+                if (!unique_word_on_pair(f_part, relations, s_pair))
+                {
+                    rec_word = "";
+                    if (s_pair == "abbb") {
+                        int kk = 1;
+                    }
+                    vector<string> part_ = word_vector(s_pair);
+                    
+                    for (int k = 0; k < j + 1; ++k)
+                        rec_word = rec_word + word_now[k];
+
+                    rec_word = rec_word + s_pair;
+
+                    for (int k = i + 1; k < word_now.size(); ++k)
+                        rec_word = rec_word + word_now[k];
+
+                    if (rec_word.size() < keli_word.size())
+                    {
+                        //dop_proverka = rec_word;
+                        /*if () {
+
+                        }*/
+                        //else
+                        res_keli_elems.push_back(rec_word);
+                        if (dop_proverka(rec_word, S, relations, max_w, max_sist_pred)) {
+                            //cout << rec_word << " ";
+                            return;
+                        }
+                        else 
+                            find_res_word(rec_word, S, relations, max_w, max_sist_pred);
+                    }
+                    else
+                        find_res_word(rec_word, S, relations, max_w, max_sist_pred);
+                }
+            }
+            sch++;
+        }
+    }
+}
+
+void vivod_keli(vector <string> S, vector < pair < string, string > > relations, int max_w, int max_sist_pred) {
+    cout << endl;
+    cout << "Операция умножения таких слов определяется по следующей таблице Кэли : " << endl;
+    for (int i = 0; i < S.size(); i++)
+    {
+        for (int j = 0; j < S.size(); j++)
+        {
+
+            if (i == 2 && j == 4) {
+                int k = 1;
+            }
+
+            string keli_word = S[i] + S[j];
+            find_res_word(keli_word, S, relations, max_w, max_sist_pred);
+            cout << res_keli_elems[res_keli_elems.size() - 1] << " ";
+            res_keli_elems.clear();
+        }
+        cout << endl;
+    }
+}
+
+
 vector <string> S;
 
 void th_alg(string& word, vector <string>& A_ofr, int& max_w, string& new_word, string& rec_word, vector < pair < string, string > >& relations)
@@ -447,6 +552,13 @@ int main()
             cout << S[i] << " ";
         }
         cout << " }" << endl;
+        int max_sist_pred = 0;
+        for (int i = 0; i < S.size(); i++)
+        {
+            if (S[i].size() > max_sist_pred)
+                max_sist_pred = S[i].size();
+        }
+        vivod_keli(S, relations, max_w, max_sist_pred);
     }
     else
         cout << "Ошибка" << endl;
