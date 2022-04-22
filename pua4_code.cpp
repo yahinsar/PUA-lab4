@@ -3,6 +3,7 @@
 #include <math.h>
 #include <algorithm>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -109,12 +110,13 @@ void postr_podpol(int N, vector <char> mnojestvo, int M, vector <char> X, char**
             for (int j = 0; j < X_res.size(); j++) {
                 cout << X_res[j] << ", ";
             }
-            break;
+            return;
         }
     }
     for (int j = 0; j < X_res.size(); j++) {
         cout << X_res[j] << ", ";
     }
+    return;
 }
 
 void proverka_1(int N, vector <char> mnojestvo, int M, vector <char> podmnojestvo, char** keli) {
@@ -126,7 +128,6 @@ void proverka_1(int N, vector <char> mnojestvo, int M, vector <char> podmnojestv
     else
         cout << "Не ассоциативна" << endl;
 
-
 }
 
 bool unique_matr(vector < vector <int> >matrix_res, vector < vector < vector <int> > > res_all_matr) {
@@ -137,8 +138,33 @@ bool unique_matr(vector < vector <int> >matrix_res, vector < vector < vector <in
     }
     return true;
 }
-
-void second_bin(int N, vector < vector < vector <int> > > res_all_matr) {
+int mult_matr(vector < vector <int> > matrix1, vector < vector <int> > matrix2, int N, vector < vector < vector <int> > > res_all_matr) {
+    vector < vector <int> >  matrix_res;
+    vector <int> s(N, 0);
+    for (int jh = 0; jh < N; jh++)
+    {
+        matrix_res.push_back(s);
+    }
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            for (int k = 0; k < N; k++) {
+                if (matrix1[i][k] == 1 && matrix2[k][j] == 1) {
+                    matrix_res[i][j] = 1;
+                    break;
+                }
+            }
+        }
+    }
+    for (int g = 0; g < res_all_matr.size(); g++)
+    {
+        if (matrix_res == res_all_matr[g])
+            return g + 1;
+            //cout << setw(6) << "№" << g + 1 << " ";
+    }
+}
+void second_bin(int N, vector < vector < vector <int> > > res_all_matr, int matr_count) {
     int razmer = res_all_matr.size();
     int dps = 0;
     while (res_all_matr.size() != razmer || dps == 0) {
@@ -175,6 +201,7 @@ void second_bin(int N, vector < vector < vector <int> > > res_all_matr) {
     cout << "Получаем: " << endl;
     for (int g = 0; g < res_all_matr.size(); g++)
     {
+        cout << "Матрица " << g + 1 << endl;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 cout << res_all_matr[g][i][j] << " ";
@@ -182,6 +209,23 @@ void second_bin(int N, vector < vector < vector <int> > > res_all_matr) {
             cout << endl;
         }
         cout << endl;
+        cout << endl;
+    }
+
+    cout << "Таблица Кэли: " << endl;
+    cout << setw(6) << " " << " ";
+    for (int i = 0; i < res_all_matr.size(); i++) {
+        cout << setw(6) << i + 1;
+    }
+    int s_d = 0;
+    cout << endl;
+    for (int g = 0; g < res_all_matr.size(); g++)
+    {
+        cout << setw(6) << g + 1 << " ";
+        for (int f = 0; f < res_all_matr.size(); f++)
+        {
+            cout << setw(6) << mult_matr(res_all_matr[g], res_all_matr[f], N, res_all_matr);
+        }
         cout << endl;
     }
 }
@@ -216,7 +260,6 @@ vector<string> word_vector(string word)
 }
 
 vector <string> res_keli_elems;
-
 
 void find_res_word(string keli_word, vector <string> S, vector < pair < string, string > > relations, int max_w, int max_sist_pred);
 
@@ -293,20 +336,25 @@ void find_res_word(string keli_word, vector <string> S, vector < pair < string, 
 void vivod_keli(vector <string> S, vector < pair < string, string > > relations, int max_w, int max_sist_pred) {
     cout << endl;
     cout << "Операция умножения таких слов определяется по следующей таблице Кэли : " << endl;
+    cout << setw(6) << " " << " ";
     for (int i = 0; i < S.size(); i++)
     {
+        cout << setw(6) << S[i] << " ";
+    }
+    cout << endl;
+    for (int i = 0; i < S.size(); i++)
+    {
+        cout << setw(6) << S[i] << " ";
         for (int j = 0; j < S.size(); j++)
         {
-
             string keli_word = S[i] + S[j];
             find_res_word(keli_word, S, relations, max_w, max_sist_pred);
-            cout << res_keli_elems[res_keli_elems.size() - 1] << " ";
+            cout << setw(6) << res_keli_elems[res_keli_elems.size() - 1] << " ";
             res_keli_elems.clear();
         }
         cout << endl;
     }
 }
-
 
 vector <string> S;
 
@@ -350,8 +398,9 @@ void th_alg(string& word, vector <string>& A_ofr, int& max_w, string& new_word, 
                 }
                 else if (!unique_word(rec_word, A_ofr))
                     return;
-                else
+                else {
                     th_alg(rec_word, A_ofr, max_w, new_word, rec_word, relations);
+                }
             }
             if (!unique_word(word, A_ofr))
                 return;
@@ -456,7 +505,7 @@ int main()
             res_all_matr.push_back(matrix1);
         }
 
-        second_bin(N, res_all_matr);
+        second_bin(N, res_all_matr, matr_count);
     }
     else if (sposob == 3) {
         cout << "Введите количество символов в алфавите A: " << endl;
@@ -542,3 +591,4 @@ int main()
 
     cout << endl;
 }
+
